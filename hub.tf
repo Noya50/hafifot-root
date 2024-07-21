@@ -28,7 +28,7 @@ locals {
 }
 
 module "hub_default_subnet" {
-  source = "./modules/subnet"
+  source = "github.com/Noya50/hafifot-subnet.git"
 
   location                    = local.location
   resource_group_name         = local.hub_rg_name
@@ -36,7 +36,7 @@ module "hub_default_subnet" {
   vnet_name                   = module.hub_vnet.name
   subnet_address_prefixes     = local.default_subnet_addresses
   network_security_group_name = local.nsg_name
-  log_analytics_workspace_id = local.log_analytics_workspace_id
+  log_analytics_workspace_id  = local.log_analytics_workspace_id
 }
 
 locals {
@@ -46,7 +46,7 @@ locals {
 }
 
 module "hub_firewall_management_subnet" {
-  source = "./modules/subnet"
+  source = "github.com/Noya50/hafifot-subnet.git"
 
   name                    = local.management_subnet_name
   location                = local.location
@@ -63,7 +63,7 @@ locals {
 }
 
 module "hub_firewall_subnet" {
-  source = "./modules/subnet"
+  source = "github.com/Noya50/hafifot-subnet.git"
 
   location                = local.location
   resource_group_name     = local.hub_rg_name
@@ -80,7 +80,7 @@ locals {
 }
 
 module "hub_gateway_subnet" {
-  source = "./modules/subnet"
+  source = "github.com/Noya50/hafifot-subnet.git"
 
   location                = local.location
   resource_group_name     = local.hub_rg_name
@@ -130,7 +130,7 @@ locals {
 }
 
 module "hub_vpnGateway" {
-  source = "./modules/vpnGateway"
+  source = "github.com/Noya50/hafifot-vpnGateway.git"
 
   location                                      = local.location
   resource_group                                = local.hub_rg_name
@@ -147,13 +147,13 @@ module "hub_vpnGateway" {
 }
 
 locals {
-  policy_name          = "noya-hub-firewall-policy-tf"
-  management_subnet_id = module.hub_firewall_management_subnet.id
-  firewall_subnet_id   = module.hub_firewall_subnet.id
-  firewall_name        = "noya-hub-firewall-tf"
-  firewall_pip_name    = "noya-hub-firewall-pip-tf"
+  policy_name                             = "noya-hub-firewall-policy-tf"
+  management_subnet_id                    = module.hub_firewall_management_subnet.id
+  firewall_subnet_id                      = module.hub_firewall_subnet.id
+  firewall_name                           = "noya-hub-firewall-tf"
+  firewall_pip_name                       = "noya-hub-firewall-pip-tf"
   firewall_pip_log_analytics_workspace_id = local.log_analytics_workspace_id
-  json_path = ""
+  json_path                               = ""
   # application_rules_map = jsondecode(file(local.json_path))["application_rules"]
   # application_rule_collections = [
   #   {
@@ -166,19 +166,19 @@ locals {
 }
 
 module "hub_firewall" {
-  source = "./modules/firewall"
+  source = "github.com/Noya50/hafifot-firewall.git"
 
-  location                   = local.location
-  resource_group             = local.hub_rg_name
-  vnet_name                  = module.hub_vnet.name
-  policy_name                = local.policy_name
-  management_subnet_id       = local.management_subnet_id
-  firewall_subnet_id         = local.firewall_subnet_id
-  firewall_pip_name          = local.firewall_pip_name
-  firewall_name              = local.firewall_name
-  log_analytics_workspace_id = local.log_analytics_workspace_id
+  location                                = local.location
+  resource_group                          = local.hub_rg_name
+  vnet_name                               = module.hub_vnet.name
+  policy_name                             = local.policy_name
+  management_subnet_id                    = local.management_subnet_id
+  firewall_subnet_id                      = local.firewall_subnet_id
+  firewall_pip_name                       = local.firewall_pip_name
+  firewall_name                           = local.firewall_name
+  log_analytics_workspace_id              = local.log_analytics_workspace_id
   firewall_pip_log_analytics_workspace_id = local.firewall_pip_log_analytics_workspace_id
-  is_force_tunneling_enabled = true
+  is_force_tunneling_enabled              = true
 }
 
 locals {
@@ -200,26 +200,26 @@ resource "azurerm_log_analytics_workspace" "this" {
 }
 
 locals {
-  log_analytics_workspace_diagnostic_setting_categories = [ "Audit", "SummaryLogs" ]
+  log_analytics_workspace_diagnostic_setting_categories = ["Audit", "SummaryLogs"]
 }
 
 module "log_analytics_workspace_diagnostic_setting" {
-  source = "./modules/diagnosticSetting"
+  source = "github.com/Noya50/hafifot-diagnosticSetting.git"
 
-  name                       = "${azurerm_log_analytics_workspace.this.name}-diagnostic-setting"
-  target_resource_id         = azurerm_log_analytics_workspace.this.id
-  log_analytics_workspace_id = local.log_analytics_workspace_id
+  name                          = "${azurerm_log_analytics_workspace.this.name}-diagnostic-setting"
+  target_resource_id            = azurerm_log_analytics_workspace.this.id
+  log_analytics_workspace_id    = local.log_analytics_workspace_id
   diagnostic_setting_categories = local.log_analytics_workspace_diagnostic_setting_categories
 }
 
 locals {
-  acr_name                  = "noyaHubAcrTF"
-  acr_sku                   = "Premium"
-  hub_subnet_id             = module.hub_default_subnet
+  acr_name      = "noyaHubAcrTF"
+  acr_sku       = "Premium"
+  hub_subnet_id = module.hub_default_subnet
 }
 
 module "hub_acr" {
-  source = "./modules/acr"
+  source = "github.com/Noya50/hafifot-acr.git"
 
   location                   = local.location
   resource_group             = local.hub_rg_name
@@ -230,16 +230,16 @@ module "hub_acr" {
 }
 
 locals {
-  hub_acr_dns_zone_name   = "noya.tf.hub"
-  acr_dns_a_records_ips_and_names   = { "acr" = ["${module.hub_acr.private_endpoint_private_ip}"], }
-  acr_dns_a_records_ttl   = [300, ]
+  hub_acr_dns_zone_name           = "noya.tf.hub"
+  acr_dns_a_records_ips_and_names = { "acr" = ["${module.hub_acr.private_endpoint_private_ip}"], }
+  acr_dns_a_records_ttl           = [300, ]
 }
 
 module "hub_acr_private_dns_zone" {
   source = "github.com/Noya50/hafifot-privateDnsZone.git"
 
-  resource_group_name   = local.hub_rg_name
-  private_dns_zone_name = local.hub_acr_dns_zone_name
-  dns_a_records_ips_and_names     = local.acr_dns_a_records_ips_and_names
-  dns_a_records_ttl     = local.acr_dns_a_records_ttl
+  resource_group_name         = local.hub_rg_name
+  private_dns_zone_name       = local.hub_acr_dns_zone_name
+  dns_a_records_ips_and_names = local.acr_dns_a_records_ips_and_names
+  dns_a_records_ttl           = local.acr_dns_a_records_ttl
 }

@@ -28,7 +28,7 @@ locals {
 }
 
 module "monitor_default_subnet" {
-  source = "./modules/subnet"
+  source = "github.com/Noya50/hafifot-subnet.git"
 
   location                    = local.location
   resource_group_name         = local.monitor_rg_name
@@ -36,7 +36,7 @@ module "monitor_default_subnet" {
   vnet_name                   = module.monitor_vnet.name
   subnet_address_prefixes     = local.monitor_default_subnet_addresses
   network_security_group_name = local.monitor_nsg_name
-  log_analytics_workspace_id = local.log_analytics_workspace_id
+  log_analytics_workspace_id  = local.log_analytics_workspace_id
 }
 
 locals {
@@ -73,36 +73,36 @@ module "monitor_route_table" {
 }
 
 locals {
-  monitor_vm_name = "noya-monitor-vm-tf"
+  monitor_vm_name           = "noya-monitor-vm-tf"
   monitor_vm_admin_username = "azureuser"
-  monitor_vm_admin_password = "omega!653653"
-  monitor_os = "linux"
+  monitor_vm_admin_password = var.monitor_vm_password
+  monitor_os                = "linux"
 }
 
 module "monitor_linux_vm" {
-  source = "./modules/vm"
+  source = "github.com/Noya50/hafifot-vm.git"
 
-  subnet_id           = module.monitor_default_subnet.id
-  vm_name             = local.monitor_vm_name
-  resource_group_name = local.monitor_rg_name
-  location            = local.location
-  admin_username      = local.monitor_vm_admin_username
-  admin_password      = local.monitor_vm_admin_password
-  os                  = local.monitor_os
+  subnet_id                  = module.monitor_default_subnet.id
+  vm_name                    = local.monitor_vm_name
+  resource_group_name        = local.monitor_rg_name
+  location                   = local.location
+  admin_username             = local.monitor_vm_admin_username
+  admin_password             = local.monitor_vm_admin_password
+  os                         = local.monitor_os
   log_analytics_workspace_id = local.log_analytics_workspace_id
 }
 
 locals {
-  monitor_private_dns_zone_name = "noya.tf.monitor"
-  monitor_dns_a_records_ips_and_names  = { "grafana-vm" = ["${module.monitor_linux_vm.vm_private_ip}"] }
-  monitor_dns_a_records_ttl     = [300, ]
+  monitor_private_dns_zone_name       = "noya.tf.monitor"
+  monitor_dns_a_records_ips_and_names = { "grafana-vm" = ["${module.monitor_linux_vm.vm_private_ip}"] }
+  monitor_dns_a_records_ttl           = [300, ]
 }
 
 module "monitor_vm_private_dns_zone" {
   source = "github.com/Noya50/hafifot-privateDnsZone.git"
 
-  resource_group_name   = local.monitor_rg_name
-  private_dns_zone_name = local.monitor_private_dns_zone_name
-  dns_a_records_ips_and_names     = local.monitor_dns_a_records_ips_and_names
-  dns_a_records_ttl     = local.monitor_dns_a_records_ttl
+  resource_group_name         = local.monitor_rg_name
+  private_dns_zone_name       = local.monitor_private_dns_zone_name
+  dns_a_records_ips_and_names = local.monitor_dns_a_records_ips_and_names
+  dns_a_records_ttl           = local.monitor_dns_a_records_ttl
 }

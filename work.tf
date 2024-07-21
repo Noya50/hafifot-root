@@ -28,7 +28,7 @@ locals {
 }
 
 module "work_default_subnet" {
-  source = "./modules/subnet"
+  source = "github.com/Noya50/hafifot-subnet.git"
 
   location                    = local.location
   resource_group_name         = local.work_rg_name
@@ -36,7 +36,7 @@ module "work_default_subnet" {
   vnet_name                   = module.work_vnet.name
   subnet_address_prefixes     = local.work_default_subnet_addresses
   network_security_group_name = local.work_nsg_name
-  log_analytics_workspace_id = local.log_analytics_workspace_id
+  log_analytics_workspace_id  = local.log_analytics_workspace_id
 }
 
 locals {
@@ -79,7 +79,7 @@ locals {
 }
 
 module "work_aks" {
-  source = "./modules/aks"
+  source = "github.com/Noya50/hafifot-aks.git"
 
   cluster_name               = local.cluster_name
   location                   = local.location
@@ -90,13 +90,13 @@ module "work_aks" {
 }
 
 locals {
-  sa_name               = "noyastorageaccounttf"
-  sa_tier               = "Standard"
-  work_subnet_id        = module.work_default_subnet.id
+  sa_name        = "noyastorageaccounttf"
+  sa_tier        = "Standard"
+  work_subnet_id = module.work_default_subnet.id
 }
 
 module "work_storageAccount" {
-  source = "./modules/storageAccount"
+  source = "git::https://github.com/Noya50/hafifot-storageAccount.git"
 
   storageAccount_name        = local.sa_name
   resource_group             = local.work_rg_name
@@ -108,19 +108,19 @@ module "work_storageAccount" {
 locals {
   vm_name    = "noya-work-vm-tf"
   username   = "azureuser"
-  password   = "omega!653653"
+  password   = var.work_vm_password
   work_vm_os = "linux"
 }
 
 module "work_linux_vm" {
-  source = "./modules/vm"
+  source = "git::https://github.com/Noya50/hafifot-vm.git"
 
-  subnet_id           = module.work_default_subnet.id
-  vm_name             = local.vm_name
-  resource_group_name = local.work_rg_name
-  location            = local.location
-  admin_username      = local.username
-  admin_password      = local.password
-  os                  = local.work_vm_os
+  subnet_id                  = module.work_default_subnet.id
+  vm_name                    = local.vm_name
+  resource_group_name        = local.work_rg_name
+  location                   = local.location
+  admin_username             = local.username
+  admin_password             = local.password
+  os                         = local.work_vm_os
   log_analytics_workspace_id = local.log_analytics_workspace_id
 }
