@@ -13,7 +13,7 @@ locals {
 }
 
 module "hub_vnet" {
-  source = "github.com/Noya50/hafifot-virtualNetwork.git"
+  source = "github.com/Noya50/hafifot-virtualNetwork.git?ref=main"
 
   name                = local.vnet_name
   location            = local.location
@@ -28,7 +28,7 @@ locals {
 }
 
 module "hub_default_subnet" {
-  source = "github.com/Noya50/hafifot-subnet.git"
+  source = "github.com/Noya50/hafifot-subnet.git?ref=main"
 
   location                    = local.location
   resource_group_name         = local.hub_rg_name
@@ -46,7 +46,7 @@ locals {
 }
 
 module "hub_firewall_management_subnet" {
-  source = "github.com/Noya50/hafifot-subnet.git"
+  source = "github.com/Noya50/hafifot-subnet.git?ref=main"
 
   name                    = local.management_subnet_name
   location                = local.location
@@ -63,7 +63,7 @@ locals {
 }
 
 module "hub_firewall_subnet" {
-  source = "github.com/Noya50/hafifot-subnet.git"
+  source = "github.com/Noya50/hafifot-subnet.git?ref=main"
 
   location                = local.location
   resource_group_name     = local.hub_rg_name
@@ -80,7 +80,7 @@ locals {
 }
 
 module "hub_gateway_subnet" {
-  source = "github.com/Noya50/hafifot-subnet.git"
+  source = "github.com/Noya50/hafifot-subnet.git?ref=main"
 
   location                = local.location
   resource_group_name     = local.hub_rg_name
@@ -109,7 +109,7 @@ locals {
 }
 
 module "hub_route_table" {
-  source = "github.com/Noya50/hafifot-routeTable.git"
+  source = "github.com/Noya50/hafifot-routeTable.git?ref=main"
 
   name           = local.hub_route_table_name
   location       = local.location
@@ -123,14 +123,14 @@ locals {
   vpn_client_configuration_address_space        = ["10.5.0.0/16"]
   vpn_client_configuration_vpn_auth_types       = ["AAD"]
   vpn_client_configuration_vpn_client_protocols = ["OpenVPN"]
-  vpn_client_configuration_aad_tenant           = "https://login.microsoftonline.com/c9ad96a7-2bac-49a7-abf6-8e932f60bf2b/"
+  vpn_client_configuration_aad_tenant           = var.aad_tenant
   aad_audience                                  = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
-  aad_issuer                                    = "https://sts.windows.net/c9ad96a7-2bac-49a7-abf6-8e932f60bf2b/"
+  aad_issuer                                    = var.aad_issuer
   gateway_subnet_id                             = module.hub_gateway_subnet.id
 }
 
 module "hub_vpnGateway" {
-  source = "github.com/Noya50/hafifot-vpnGateway.git"
+  source = "github.com/Noya50/hafifot-vpnGateway.git?ref=main"
 
   location                                      = local.location
   resource_group                                = local.hub_rg_name
@@ -166,7 +166,7 @@ locals {
 }
 
 module "hub_firewall" {
-  source = "github.com/Noya50/hafifot-firewall.git"
+  source = "github.com/Noya50/hafifot-firewall.git?ref=main"
 
   location                                = local.location
   resource_group                          = local.hub_rg_name
@@ -204,7 +204,7 @@ locals {
 }
 
 module "log_analytics_workspace_diagnostic_setting" {
-  source = "github.com/Noya50/hafifot-diagnosticSetting.git"
+  source = "github.com/Noya50/hafifot-diagnosticSetting.git?ref=main"
 
   name                          = "${azurerm_log_analytics_workspace.this.name}-diagnostic-setting"
   target_resource_id            = azurerm_log_analytics_workspace.this.id
@@ -219,7 +219,7 @@ locals {
 }
 
 module "hub_acr" {
-  source = "github.com/Noya50/hafifot-acr.git"
+  source = "github.com/Noya50/hafifot-acr.git?ref=main"
 
   location                   = local.location
   resource_group             = local.hub_rg_name
@@ -236,7 +236,7 @@ locals {
 }
 
 module "hub_acr_private_dns_zone" {
-  source = "github.com/Noya50/hafifot-privateDnsZone.git"
+  source = "github.com/Noya50/hafifot-privateDnsZone.git?ref=main"
 
   resource_group_name         = local.hub_rg_name
   private_dns_zone_name       = local.hub_acr_dns_zone_name

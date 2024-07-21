@@ -13,7 +13,7 @@ locals {
 }
 
 module "work_vnet" {
-  source = "github.com/Noya50/hafifot-virtualNetwork.git"
+  source = "github.com/Noya50/hafifot-virtualNetwork.git?ref=main"
 
   name                = local.work_vnet_name
   location            = local.location
@@ -28,7 +28,7 @@ locals {
 }
 
 module "work_default_subnet" {
-  source = "github.com/Noya50/hafifot-subnet.git"
+  source = "github.com/Noya50/hafifot-subnet.git?ref=main"
 
   location                    = local.location
   resource_group_name         = local.work_rg_name
@@ -64,7 +64,7 @@ locals {
 }
 
 module "work_route_table" {
-  source = "github.com/Noya50/hafifot-routeTable.git"
+  source = "github.com/Noya50/hafifot-routeTable.git?ref=main"
 
   name           = local.work_route_table_name
   location       = local.location
@@ -79,7 +79,7 @@ locals {
 }
 
 module "work_aks" {
-  source = "github.com/Noya50/hafifot-aks.git"
+  source = "github.com/Noya50/hafifot-aks.git?ref=main"
 
   cluster_name               = local.cluster_name
   location                   = local.location
@@ -96,7 +96,7 @@ locals {
 }
 
 module "work_storageAccount" {
-  source = "git::https://github.com/Noya50/hafifot-storageAccount.git"
+  source = "git::https://github.com/Noya50/hafifot-storageAccount.git?ref=main"
 
   storageAccount_name        = local.sa_name
   resource_group             = local.work_rg_name
@@ -113,7 +113,7 @@ locals {
 }
 
 module "work_linux_vm" {
-  source = "git::https://github.com/Noya50/hafifot-vm.git"
+  source = "git::https://github.com/Noya50/hafifot-vm.git?ref=main"
 
   subnet_id                  = module.work_default_subnet.id
   vm_name                    = local.vm_name

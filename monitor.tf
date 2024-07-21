@@ -13,7 +13,7 @@ locals {
 }
 
 module "monitor_vnet" {
-  source = "github.com/Noya50/hafifot-virtualNetwork.git"
+  source = "github.com/Noya50/hafifot-virtualNetwork.git?ref=main"
 
   name                = local.monitor_vnet_name
   location            = local.location
@@ -28,7 +28,7 @@ locals {
 }
 
 module "monitor_default_subnet" {
-  source = "github.com/Noya50/hafifot-subnet.git"
+  source = "github.com/Noya50/hafifot-subnet.git?ref=main"
 
   location                    = local.location
   resource_group_name         = local.monitor_rg_name
@@ -64,7 +64,7 @@ locals {
 }
 
 module "monitor_route_table" {
-  source = "github.com/Noya50/hafifot-routeTable.git"
+  source = "github.com/Noya50/hafifot-routeTable.git?ref=main"
 
   name           = local.monitor_route_table_name
   location       = local.location
@@ -80,7 +80,7 @@ locals {
 }
 
 module "monitor_linux_vm" {
-  source = "github.com/Noya50/hafifot-vm.git"
+  source = "github.com/Noya50/hafifot-vm.git?ref=main"
 
   subnet_id                  = module.monitor_default_subnet.id
   vm_name                    = local.monitor_vm_name
@@ -99,7 +99,7 @@ locals {
 }
 
 module "monitor_vm_private_dns_zone" {
-  source = "github.com/Noya50/hafifot-privateDnsZone.git"
+  source = "github.com/Noya50/hafifot-privateDnsZone.git?ref=main"
 
   resource_group_name         = local.monitor_rg_name
   private_dns_zone_name       = local.monitor_private_dns_zone_name
