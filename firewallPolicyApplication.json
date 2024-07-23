@@ -1,0 +1,13 @@
+{
+    "work_to_install_docker": {
+        "protocols": [
+            "Any"
+        ],
+        "source_addresses": [
+            "10.3.0.0/16"
+        ],
+        "destination_fqdns": [
+            "canonical-bos01.cdn.snapcraftcontent.com", "api.snapcraft.io", "8ab42eab-5938-4097-9301-5030dcd8a123.oms.opinsights.azure.com", "8ab42eab-5938-4097-9301-5030dcd8a123.oms.opinsights.azure.com", "8ab42eab-5938-4097-9301-5030dcd8a123.agentsvc.azure-automation.net", "canonical-lgw01.cdn.snapcraftcontent.com"
+        ]
+    }
+}

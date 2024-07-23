@@ -13,7 +13,7 @@ locals {
 }
 
 module "work_vnet" {
-  source = "github.com/Noya50/hafifot-virtualNetwork.git?ref=main"
+  source = "git::https://github.com/Noya50/hafifot-virtualNetwork.git?ref=main"
 
   name                       = local.work_vnet_name
   location                   = local.location

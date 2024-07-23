@@ -13,7 +13,7 @@ locals {
 }
 
 module "hub_vnet" {
-  source = "github.com/Noya50/hafifot-virtualNetwork.git?ref=main"
+  source = "git::https://github.com/Noya50/hafifot-virtualNetwork.git?ref=main"
 
   name                       = local.vnet_name
   location                   = local.location
@@ -154,16 +154,26 @@ locals {
   firewall_name                           = "noya-hub-firewall-tf"
   firewall_pip_name                       = "noya-hub-firewall-pip-tf"
   firewall_pip_log_analytics_workspace_id = local.log_analytics_workspace_id
-  json_path                               = ""
-  # application_rules_map = jsondecode(file(local.json_path))["application_rules"]
-  # application_rule_collections = [
-  #   {
-  #     name      = ""
-  #     priority  = 0
-  #     action    = ""
-  #     rule = local.application_rules_map
-  #   },
-  # ]
+  network_rules_json_path                 = "C:/Users/sysadmin7/Desktop/hafifot-root/firewallPolicy.json"
+  network_rules_map                       = tomap(jsondecode(file(local.network_rules_json_path)))
+  network_rule_collections = tolist([
+    {
+      name     = "allow"
+      priority = 400
+      action   = "Allow"
+      rule     = local.network_rules_map
+    },
+  ])
+  application_rules_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/firewallPolicyApplication.json"
+  application_rules_map       = tomap(jsondecode(file(local.application_rules_json_path)))
+  application_rule_collections = [
+    {
+      name     = "allow"
+      priority = 400
+      action   = "Allow"
+      rule     = local.application_rules_map
+    },
+  ]
 }
 
 module "hub_firewall" {
@@ -180,6 +190,8 @@ module "hub_firewall" {
   log_analytics_workspace_id              = local.log_analytics_workspace_id
   firewall_pip_log_analytics_workspace_id = local.firewall_pip_log_analytics_workspace_id
   is_force_tunneling_enabled              = true
+  rule_collection_group_priority          = 100
+  network_rule_collections                = local.network_rule_collections
 }
 
 locals {
