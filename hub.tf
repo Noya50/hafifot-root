@@ -15,10 +15,11 @@ locals {
 module "hub_vnet" {
   source = "github.com/Noya50/hafifot-virtualNetwork.git?ref=main"
 
-  name                = local.vnet_name
-  location            = local.location
-  resource_group_name = local.hub_rg_name
-  address_space       = local.vnet_addresses
+  name                       = local.vnet_name
+  location                   = local.location
+  resource_group_name        = local.hub_rg_name
+  address_space              = local.vnet_addresses
+  log_analytics_workspace_id = local.log_analytics_workspace_id
 }
 
 locals {
