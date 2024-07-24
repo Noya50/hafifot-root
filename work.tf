@@ -50,14 +50,26 @@ locals {
       next_hop_in_ip_address = "10.0.1.4"
     },
     {
+      name                   = "work_to_firewall"
+      address_prefix         = "10.3.0.0/16"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.0.1.4"
+    },
+    {
       name                   = "VPN_to_firewall"
       address_prefix         = "10.5.0.0/16"
       next_hop_type          = "VirtualAppliance"
       next_hop_in_ip_address = "10.0.1.4"
     },
     {
-      name                   = "work_to_firewall"
-      address_prefix         = "10.3.0.0/16"
+      name                   = "vpn_subnet_to_firewall"
+      address_prefix         = "10.5.128.0/17"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.0.1.4"
+    },
+    {
+      name                   = "vpn_subnet2_to_firewall"
+      address_prefix         = "10.5.0.0/17"
       next_hop_type          = "VirtualAppliance"
       next_hop_in_ip_address = "10.0.1.4"
     },
@@ -73,6 +85,10 @@ module "work_route_table" {
   routes         = local.work_routes
 }
 
+resource "azurerm_subnet_route_table_association" "work_default" {
+  subnet_id      = module.work_default_subnet.id
+  route_table_id = module.work_route_table.id
+}
 
 locals {
   cluster_name   = "noya-work-aks"

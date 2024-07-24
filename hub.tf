@@ -118,6 +118,16 @@ module "hub_route_table" {
   routes         = local.hub_routes
 }
 
+resource "azurerm_subnet_route_table_association" "default" {
+  subnet_id      = module.hub_default_subnet.id
+  route_table_id = module.hub_route_table.id
+}
+
+resource "azurerm_subnet_route_table_association" "vpn_subnet" {
+  subnet_id      = module.hub_gateway_subnet.id
+  route_table_id = module.hub_route_table.id
+}
+
 locals {
   vpnGateway_name                               = "vpn-gateway-hub-tf"
   vpnGateway_active_active                      = true
@@ -168,8 +178,8 @@ locals {
   application_rules_map       = tomap(jsondecode(file(local.application_rules_json_path)))
   application_rule_collections = [
     {
-      name     = "allow"
-      priority = 400
+      name     = "application-allow"
+      priority = 420
       action   = "Allow"
       rule     = local.application_rules_map
     },
@@ -192,6 +202,7 @@ module "hub_firewall" {
   is_force_tunneling_enabled              = true
   rule_collection_group_priority          = 100
   network_rule_collections                = local.network_rule_collections
+  application_rule_collections            = local.application_rule_collections
 }
 
 locals {

@@ -83,6 +83,34 @@
             "*"
         ]
     },
+    "work_to_vpn_subnet": {
+        "protocols": [
+            "Any"
+        ],
+        "source_addresses": [
+            "10.3.0.0/16"
+        ],
+        "destination_addresses": [
+            "10.5.0.0/17"
+        ],
+        "destination_ports": [
+            "*"
+        ]
+    },
+    "work_to_vpn_subnet2": {
+        "protocols": [
+            "Any"
+        ],
+        "source_addresses": [
+            "10.3.0.0/16"
+        ],
+        "destination_addresses": [
+            "10.5.128.0/17"
+        ],
+        "destination_ports": [
+            "*"
+        ]
+    },
     "hubvpn_to_monitor": {
         "protocols": [
             "Any"
@@ -106,6 +134,20 @@
         ],
         "destination_addresses": [
             "10.5.0.0/16"
+        ],
+        "destination_ports": [
+            "*"
+        ]
+    },
+    "monitor_to_vpn_subnet": {
+        "protocols": [
+            "Any"
+        ],
+        "source_addresses": [
+            "10.7.0.0/16"
+        ],
+        "destination_addresses": [
+            "10.5.0.0/17"
         ],
         "destination_ports": [
             "*"

@@ -56,11 +56,23 @@ locals {
       next_hop_in_ip_address = "10.0.1.4"
     },
     {
-      name                   = "VPNsub_to_firewall"
+      name                   = "vpn_to_firewall"
       address_prefix         = "10.5.0.0/16"
       next_hop_type          = "VirtualAppliance"
       next_hop_in_ip_address = "10.0.1.4"
-    }
+    },
+    {
+      name                   = "vpn_subnet_to_firewall"
+      address_prefix         = "10.5.0.0/17"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.0.1.4"
+    },
+    {
+      name                   = "vpn_subnet2_to_firewall"
+      address_prefix         = "10.5.128.0/17"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.0.1.4"
+    },
   ]
 }
 
@@ -71,6 +83,11 @@ module "monitor_route_table" {
   location       = local.location
   resource_group = local.monitor_rg_name
   routes         = local.monitor_routes
+}
+
+resource "azurerm_subnet_route_table_association" "monitor_default" {
+  subnet_id      = module.monitor_default_subnet.id
+  route_table_id = module.monitor_route_table.id
 }
 
 locals {
