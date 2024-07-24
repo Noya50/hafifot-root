@@ -4,7 +4,6 @@ locals {
   monitor_rg_name            = "noya-monitor-rg-tf"
   location                   = "westeurope"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
-
 }
 
 module "hub_work_peering" {

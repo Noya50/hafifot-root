@@ -267,3 +267,10 @@ module "hub_acr_private_dns_zone" {
   dns_a_records_ips_and_names = local.acr_dns_a_records_ips_and_names
   dns_a_records_ttl           = local.acr_dns_a_records_ttl
 }
+
+resource "azurerm_private_dns_zone_virtual_network_link" "hub_dns_zone_to_work_vnet" {
+  name                  = "work-vnet"
+  resource_group_name   = local.hub_rg_name
+  private_dns_zone_name = module.hub_acr_private_dns_zone.name
+  virtual_network_id    = module.work_vnet.id
+}
