@@ -164,17 +164,25 @@ locals {
   firewall_name                           = "noya-hub-firewall-tf"
   firewall_pip_name                       = "noya-hub-firewall-pip-tf"
   firewall_pip_log_analytics_workspace_id = local.log_analytics_workspace_id
-  network_rules_json_path                 = "C:/Users/sysadmin7/Desktop/hafifot-root/firewallPolicy.json"
-  network_rules_map                       = tomap(jsondecode(file(local.network_rules_json_path)))
-  network_rule_collections = tolist([
+  allow_network_rules_json_path           = "C:/Users/sysadmin7/Desktop/hafifot-root/policyNetrulesAllow.json"
+  deny_network_rules_json_path            = "C:/Users/sysadmin7/Desktop/hafifot-root/policyNetrulesDeny.json"
+  allow_network_rules_map                 = tomap(jsondecode(file(local.allow_network_rules_json_path)))
+  deny_network_rules_map                  = tomap(jsondecode(file(local.deny_network_rules_json_path)))
+  network_rule_collections = tolist(tolist([
     {
       name     = "allow"
       priority = 400
       action   = "Allow"
-      rule     = local.network_rules_map
+      rule     = local.allow_network_rules_map
     },
-  ])
-  application_rules_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/firewallPolicyApplication.json"
+    {
+      name     = "deny"
+      priority = 380
+      action   = "Deny"
+      rule     = local.deny_network_rules_map
+    }
+  ]))
+  application_rules_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/policyApprulesAllow.json"
   application_rules_map       = tomap(jsondecode(file(local.application_rules_json_path)))
   application_rule_collections = [
     {
@@ -273,4 +281,8 @@ resource "azurerm_private_dns_zone_virtual_network_link" "hub_dns_zone_to_work_v
   resource_group_name   = local.hub_rg_name
   private_dns_zone_name = module.hub_acr_private_dns_zone.name
   virtual_network_id    = module.work_vnet.id
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }

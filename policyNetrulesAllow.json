@@ -208,5 +208,19 @@
         "destination_ports": [
             "*"
         ]
+    },
+    "work_vm_to_storage_account": {
+        "protocols": [
+            "Any"
+        ],
+        "source_addresses": [
+            "10.3.0.4"
+        ],
+        "destination_addresses": [
+            "10.3.0.5"
+        ],
+        "destination_ports": [
+            "*"
+        ]
     }
 }

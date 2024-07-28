@@ -1,0 +1,16 @@
+{
+    "all-to-storage-account": {
+        "protocols": [
+            "Any"
+        ],
+        "source_addresses": [
+            "0.0.0.0/0"
+        ],
+        "destination_addresses": [
+            "10.3.0.5"
+        ],
+        "destination_ports": [
+            "*"
+        ]
+    }
+}
