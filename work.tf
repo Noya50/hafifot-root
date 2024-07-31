@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "work_rg" {
 
 locals {
   work_vnet_name      = "work-Vnet-tf"
-  work_vnet_addresses = ["10.3.0.0/16"]
+  work_vnet_addresses = ["${local.work_ip_range}"]
 }
 
 module "work_vnet" {
@@ -25,7 +25,7 @@ module "work_vnet" {
 locals {
   work_nsg_name                 = "network-security-group-work-tf"
   work_default_subnet_name      = "subnet-default-work-tf"
-  work_default_subnet_addresses = ["10.3.0.0/24"]
+  work_default_subnet_name_ip_range = ["${local.work_default_subnet_addresses}"]
 }
 
 module "work_default_subnet" {
@@ -35,45 +35,24 @@ module "work_default_subnet" {
   resource_group_name         = local.work_rg_name
   name                        = local.work_default_subnet_name
   vnet_name                   = module.work_vnet.name
-  subnet_address_prefixes     = local.work_default_subnet_addresses
+  subnet_address_prefixes     = local.work_default_subnet_name_ip_range
   network_security_group_name = local.work_nsg_name
   log_analytics_workspace_id  = local.log_analytics_workspace_id
 }
 
 locals {
   work_route_table_name = "noya-work-route-table-tf"
-  work_routes = [
-    {
-      name                   = "hub_to_firewall"
-      address_prefix         = "10.0.0.0/16"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "work_to_firewall"
-      address_prefix         = "10.3.0.0/16"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "VPN_to_firewall"
-      address_prefix         = "10.5.0.0/16"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "vpn_subnet_to_firewall"
-      address_prefix         = "10.5.128.0/17"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "vpn_subnet2_to_firewall"
-      address_prefix         = "10.5.0.0/17"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-  ]
+  work_routes_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/ruteTablesRules/workRouteTable.json"
+  work_routes_json_inputs = templatefile("${local.work_routes_json_path}", {
+    work_ip_range        = local.work_ip_range
+    monitor_ip_range = local.monitor_ip_range
+    hub_ip_range = local.hub_ip_range
+    vpn_client_configuration_address_space = local.vpn_client_configuration_address_space
+    vpn_client_subnet = local.vpn_client_subnet
+    vpn_client_subnet2 = local.vpn_client_subnet2
+    firewall_private_ip = local.firewall_private_ip
+  })
+  work_routes_map       = tomap(jsondecode(local.work_routes_json_inputs))
 }
 
 module "work_route_table" {
@@ -82,7 +61,7 @@ module "work_route_table" {
   name           = local.work_route_table_name
   location       = local.location
   resource_group = local.work_rg_name
-  routes         = local.work_routes
+  routes         = local.work_routes_map
 }
 
 resource "azurerm_subnet_route_table_association" "work_default" {
@@ -112,7 +91,7 @@ locals {
   work_subnet_id = module.work_default_subnet.id
 }
 
-module "work_storageAccount" {
+module "work_storage_account" {
   source = "git::https://github.com/Noya50/hafifot-storageAccount.git?ref=main"
 
   storageAccount_name        = local.sa_name

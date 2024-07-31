@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "hub_rg" {
 
 locals {
   vnet_name      = "hub-Vnet-tf"
-  vnet_addresses = ["10.0.0.0/16"]
+  vnet_addresses = ["${local.hub_ip_range}"]
 }
 
 module "hub_vnet" {
@@ -24,7 +24,7 @@ module "hub_vnet" {
 
 locals {
   default_subnet_name      = "subnet-default-hub-tf"
-  default_subnet_addresses = ["10.0.0.0/24"]
+  default_subnet_addresses = ["${local.hub_default_subnet_addresses}"]
   nsg_name                 = "network-security-group-hub-tf"
 }
 
@@ -42,7 +42,7 @@ module "hub_default_subnet" {
 
 locals {
   management_subnet_name            = "AzureFirewallManagementSubnet"
-  managment_subnet_address_prefixes = ["10.0.3.0/24"]
+  managment_subnet_address_prefixes = ["${local.firewall_managment_subnet}"]
   managment_no_nsg_enabled          = true
 }
 
@@ -59,7 +59,7 @@ module "hub_firewall_management_subnet" {
 
 locals {
   firewall_subnet_name               = "AzureFirewallSubnet"
-  management_subnet_address_prefixes = ["10.0.1.0/26"]
+  management_subnet_address_prefixes = ["${local.firewall_subnet}"]
   firewall_no_nsg_enabled            = true
 }
 
@@ -75,7 +75,7 @@ module "hub_firewall_subnet" {
 }
 
 locals {
-  gateway_subnet_address_prefixes = ["10.0.2.0/24"]
+  gateway_subnet_address_prefixes = ["${local.gateway_subnet}"]
   gateway_no_nsg_enabled          = true
   gateway_subnet_name             = "GatewaySubnet"
 }
@@ -93,20 +93,13 @@ module "hub_gateway_subnet" {
 
 locals {
   hub_route_table_name = "noya-hub-route-table-tf"
-  hub_routes = [
-    {
-      name                   = "work_to_firewall"
-      address_prefix         = "10.3.0.0/16"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "monitor_to_firewall"
-      address_prefix         = "10.7.0.0/16"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    }
-  ]
+  hub_routes_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/ruteTablesRules/hubRouteTable.json"
+  hub_routes_json_inputs = templatefile("${local.hub_routes_json_path}", {
+    work_ip_range        = local.work_ip_range
+    monitor_ip_range = local.monitor_ip_range
+    firewall_private_ip = local.firewall_private_ip
+  })
+  hub_routes_map       = tomap(jsondecode(local.hub_routes_json_inputs))
 }
 
 module "hub_route_table" {
@@ -115,7 +108,7 @@ module "hub_route_table" {
   name           = local.hub_route_table_name
   location       = local.location
   resource_group = local.hub_rg_name
-  routes         = local.hub_routes
+  routes         = local.hub_routes_map
 }
 
 resource "azurerm_subnet_route_table_association" "default" {
@@ -131,7 +124,7 @@ resource "azurerm_subnet_route_table_association" "vpn_subnet" {
 locals {
   vpnGateway_name                               = "vpn-gateway-hub-tf"
   vpnGateway_active_active                      = true
-  vpn_client_configuration_address_space        = ["10.5.0.0/16"]
+  client_configuration_address_space        = ["${local.vpn_client_configuration_address_space}"]
   vpn_client_configuration_vpn_auth_types       = ["AAD"]
   vpn_client_configuration_vpn_client_protocols = ["OpenVPN"]
   vpn_client_configuration_aad_tenant           = var.aad_tenant
@@ -148,7 +141,7 @@ module "hub_vpnGateway" {
   subnet_id                                     = local.gateway_subnet_id
   vpnGateway_name                               = local.vpnGateway_name
   vpnGateway_active_active                      = local.vpnGateway_active_active
-  vpn_client_configuration_address_space        = local.vpn_client_configuration_address_space
+  vpn_client_configuration_address_space        = local.client_configuration_address_space
   vpn_client_configuration_vpn_auth_types       = local.vpn_client_configuration_vpn_auth_types
   vpn_client_configuration_vpn_client_protocols = local.vpn_client_configuration_vpn_client_protocols
   aad_tenant                                    = local.vpn_client_configuration_aad_tenant
@@ -164,10 +157,23 @@ locals {
   firewall_name                           = "noya-hub-firewall-tf"
   firewall_pip_name                       = "noya-hub-firewall-pip-tf"
   firewall_pip_log_analytics_workspace_id = local.log_analytics_workspace_id
-  allow_network_rules_json_path           = "C:/Users/sysadmin7/Desktop/hafifot-root/policyNetrulesAllow.json"
-  deny_network_rules_json_path            = "C:/Users/sysadmin7/Desktop/hafifot-root/policyNetrulesDeny.json"
-  allow_network_rules_map                 = tomap(jsondecode(file(local.allow_network_rules_json_path)))
-  deny_network_rules_map                  = tomap(jsondecode(file(local.deny_network_rules_json_path)))
+  allow_network_rules_json_path           = "C:/Users/sysadmin7/Desktop/hafifot-root/firewallPoliciesRules/policyNetRulesAllow.json"
+  allow_network_rules_json_inputs = templatefile("${local.allow_network_rules_json_path}", {
+    work_ip_range        = local.work_ip_range
+    monitor_ip_range = local.monitor_ip_range
+    hub_ip_range = local.hub_ip_range
+    vpn_client_configuration_address_space = local.vpn_client_configuration_address_space
+    vpn_client_subnet = local.vpn_client_subnet
+    vpn_client_subnet2 = local.vpn_client_subnet2
+    work_vm_private_ip = local.work_vm_private_ip
+    firewall_private_ip = local.firewall_private_ip 
+  })
+  allow_network_rules_map                 = tomap(jsondecode(local.allow_network_rules_json_inputs))
+  deny_network_rules_json_path            = "C:/Users/sysadmin7/Desktop/hafifot-root/firewallPoliciesRules/policyNetRulesDeny.json"
+  deny_network_rules_json_inputs = templatefile("${local.deny_network_rules_json_path}", {
+    work_vm_private_ip        = local.work_vm_private_ip
+  })
+  deny_network_rules_map                  = tomap(jsondecode(local.deny_network_rules_json_inputs))
   network_rule_collections = tolist(tolist([
     {
       name     = "allow"
@@ -182,8 +188,12 @@ locals {
       rule     = local.deny_network_rules_map
     }
   ]))
-  application_rules_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/policyApprulesAllow.json"
-  application_rules_map       = tomap(jsondecode(file(local.application_rules_json_path)))
+  application_rules_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/firewallPoliciesRules/policyAppRulesAllow.json"
+  application_rules_json_inputs = templatefile("${local.application_rules_json_path}", {
+    work_ip_range = local.work_ip_range
+    monitor_ip_range = local.monitor_ip_range
+  })
+  application_rules_map       = tomap(jsondecode(local.application_rules_json_inputs))
   application_rule_collections = [
     {
       name     = "application-allow"

@@ -1,0 +1,27 @@
+{
+    "hub_to_firewall": {
+        "address_prefix": "${hub_ip_range}",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "${firewall_private_ip}"
+    },
+    "work_to_firewall": {
+        "address_prefix": "${work_ip_range}",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "${firewall_private_ip}"
+    },
+    "vpn_to_firewall": {
+        "address_prefix": "${vpn_client_configuration_address_space}",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "${firewall_private_ip}"
+    },
+    "vpn_subnet_to_firewall": {
+        "address_prefix": "${vpn_client_subnet2}",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "${firewall_private_ip}"
+    },
+    "vpn_subnet2_to_firewall": {
+        "address_prefix": "${vpn_client_subnet}",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "${firewall_private_ip}"
+    }
+}

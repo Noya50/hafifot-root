@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "monitor_rg" {
 
 locals {
   monitor_vnet_name      = "monitor-vnet-tf"
-  monitor_vnet_addresses = ["10.7.0.0/16"]
+  monitor_vnet_addresses = ["${local.monitor_ip_range}"]
 }
 
 module "monitor_vnet" {
@@ -25,7 +25,7 @@ module "monitor_vnet" {
 locals {
   monitor_nsg_name                 = "network-security-group-monitor-tf"
   monitor_default_subnet_name      = "subnet-default-monitor-tf"
-  monitor_default_subnet_addresses = ["10.7.0.0/24"]
+  monitor_default_subnet_ip_range = ["${local.monitor_default_subnet_addresses}"]
 }
 
 module "monitor_default_subnet" {
@@ -35,45 +35,24 @@ module "monitor_default_subnet" {
   resource_group_name         = local.monitor_rg_name
   name                        = local.monitor_default_subnet_name
   vnet_name                   = module.monitor_vnet.name
-  subnet_address_prefixes     = local.monitor_default_subnet_addresses
+  subnet_address_prefixes     = local.monitor_default_subnet_ip_range
   network_security_group_name = local.monitor_nsg_name
   log_analytics_workspace_id  = local.log_analytics_workspace_id
 }
 
 locals {
   monitor_route_table_name = "noya-monitor-route-table-tf"
-  monitor_routes = [
-    {
-      name                   = "hub_to_firewall"
-      address_prefix         = "10.0.0.0/16"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "monitor_to_firewall"
-      address_prefix         = "10.7.0.0/16"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "vpn_to_firewall"
-      address_prefix         = "10.5.0.0/16"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "vpn_subnet_to_firewall"
-      address_prefix         = "10.5.0.0/17"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-    {
-      name                   = "vpn_subnet2_to_firewall"
-      address_prefix         = "10.5.128.0/17"
-      next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
-    },
-  ]
+  monitor_routes_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/ruteTablesRules/monitorRouteTable.json"
+  monitor_routes_json_inputs = templatefile("${local.monitor_routes_json_path}", {
+    work_ip_range        = local.work_ip_range
+    monitor_ip_range = local.monitor_ip_range
+    hub_ip_range = local.hub_ip_range
+    firewall_private_ip = local.firewall_private_ip
+    vpn_client_subnet = local.vpn_client_subnet
+    vpn_client_subnet2 = local.vpn_client_subnet2
+    vpn_client_configuration_address_space = local.vpn_client_configuration_address_space
+  })
+  monitor_routes_map       = tomap(jsondecode(local.monitor_routes_json_inputs))
 }
 
 module "monitor_route_table" {
@@ -82,7 +61,7 @@ module "monitor_route_table" {
   name           = local.monitor_route_table_name
   location       = local.location
   resource_group = local.monitor_rg_name
-  routes         = local.monitor_routes
+  routes         = local.monitor_routes_map
 }
 
 resource "azurerm_subnet_route_table_association" "monitor_default" {
@@ -113,7 +92,7 @@ module "monitor_linux_vm" {
 locals {
   monitor_private_dns_zone_name       = "noya.tf.monitor"
   monitor_dns_a_records_ips_and_names = { "grafana-vm" = ["${module.monitor_linux_vm.vm_private_ip}"] }
-  monitor_dns_a_records_ttl           = [300, ]
+  monitor_dns_a_records_ttl           = [300]
 }
 
 module "monitor_vm_private_dns_zone" {

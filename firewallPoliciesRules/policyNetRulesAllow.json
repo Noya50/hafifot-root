@@ -4,10 +4,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_addresses": [
-            "10.0.0.0/16"
+            "${hub_ip_range}"
         ],
         "destination_ports": [
             "*"
@@ -18,10 +18,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.7.0.0/16"
+            "${monitor_ip_range}"
         ],
         "destination_addresses": [
-            "10.0.0.0/16"
+            "${hub_ip_range}"
         ],
         "destination_ports": [
             "*"
@@ -32,10 +32,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.0.0.0/16"
+            "${hub_ip_range}"
         ],
         "destination_addresses": [
-            "10.7.0.0/16"
+            "${monitor_ip_range}"
         ],
         "destination_ports": [
             "*"
@@ -46,10 +46,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.0.0.0/16"
+            "${hub_ip_range}"
         ],
         "destination_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_ports": [
             "*"
@@ -60,10 +60,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.5.0.0/16"
+            "${vpn_client_configuration_address_space}"
         ],
         "destination_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_ports": [
             "*"
@@ -74,10 +74,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_addresses": [
-            "10.5.0.0/16"
+            "${vpn_client_configuration_address_space}"
         ],
         "destination_ports": [
             "*"
@@ -88,10 +88,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_addresses": [
-            "10.5.0.0/17"
+            "${vpn_client_subnet}"
         ],
         "destination_ports": [
             "*"
@@ -102,10 +102,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_addresses": [
-            "10.5.128.0/17"
+            "${vpn_client_subnet2}"
         ],
         "destination_ports": [
             "*"
@@ -116,10 +116,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.5.0.0/16"
+            "${vpn_client_configuration_address_space}"
         ],
         "destination_addresses": [
-            "10.7.0.0/16"
+            "${monitor_ip_range}"
         ],
         "destination_ports": [
             "*"
@@ -130,10 +130,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.7.0.0/16"
+            "${monitor_ip_range}"
         ],
         "destination_addresses": [
-            "10.5.0.0/16"
+            "${vpn_client_configuration_address_space}"
         ],
         "destination_ports": [
             "*"
@@ -144,10 +144,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.7.0.0/16"
+            "${monitor_ip_range}"
         ],
         "destination_addresses": [
-            "10.5.0.0/17"
+            "${vpn_client_subnet}"
         ],
         "destination_ports": [
             "*"
@@ -158,10 +158,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_ports": [
             "*"
@@ -172,38 +172,10 @@
             "Any"
         ],
         "source_addresses": [
-            "10.7.0.0/16"
+            "${monitor_ip_range}"
         ],
         "destination_addresses": [
-            "10.7.0.0/16"
-        ],
-        "destination_ports": [
-            "*"
-        ]
-    },
-    "monitor_to_grafana&azure": {
-        "protocols": [
-            "Any"
-        ],
-        "source_addresses": [
-            "10.7.0.0/16"
-        ],
-        "destination_addresses": [
-            "169.254.169.254"
-        ],
-        "destination_ports": [
-            "*"
-        ]
-    },
-    "work_install_gdb": {
-        "protocols": [
-            "Any"
-        ],
-        "source_addresses": [
-            "10.3.0.0/16"
-        ],
-        "destination_addresses": [
-            "20.54.144.51"
+            "${monitor_ip_range}"
         ],
         "destination_ports": [
             "*"
@@ -217,7 +189,7 @@
             "10.3.0.4"
         ],
         "destination_addresses": [
-            "10.3.0.5"
+            "${work_vm_private_ip}"
         ],
         "destination_ports": [
             "*"

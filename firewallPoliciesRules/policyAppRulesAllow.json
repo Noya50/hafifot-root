@@ -1,47 +1,4 @@
 {
-    "work_to_install_docker": {
-        "protocols": [
-            {
-                "type": "Http",
-                "port": 80
-            },
-            {
-                "type": "Https",
-                "port": 443
-            }
-        ],
-        "source_addresses": [
-            "10.3.0.0/16"
-        ],
-        "destination_fqdns": [
-            "canonical-bos01.cdn.snapcraftcontent.com",
-            "api.snapcraft.io",
-            "8ab42eab-5938-4097-9301-5030dcd8a123.oms.opinsights.azure.com",
-            "8ab42eab-5938-4097-9301-5030dcd8a123.agentsvc.azure-automation.net",
-            "canonical-lgw01.cdn.snapcraftcontent.com"
-        ]
-    },
-    "work&monitor_to_dockerRegistry": {
-        "protocols": [
-            {
-                "type": "Http",
-                "port": 80
-            },
-            {
-                "type": "Https",
-                "port": 443
-            }
-        ],
-        "source_addresses": [
-            "10.3.0.0/16",
-            "10.7.0.0/16"
-        ],
-        "destination_fqdns": [
-            "registry-1.docker.io",
-            "8ab42eab-5938-4097-9301-5030dcd8a123.ods.opinsights.azure.com",
-            "production.cloudflare.docker.com"
-        ]
-    },
     "work_to_azurelogin": {
         "protocols": [
             {
@@ -54,29 +11,10 @@
             }
         ],
         "source_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_fqdns": [
             "login.microsoftonline.com"
-        ]
-    },
-    "monitor&work_to_alpine": {
-        "protocols": [
-            {
-                "type": "Http",
-                "port": 80
-            },
-            {
-                "type": "Https",
-                "port": 443
-            }
-        ],
-        "source_addresses": [
-            "10.7.0.0/16",
-            "10.3.0.0/16"
-        ],
-        "destination_fqdns": [
-            "dl-cdn.alpinelinux.org"
         ]
     },
     "monitor_to_gafana&azure": {
@@ -91,7 +29,7 @@
             }
         ],
         "source_addresses": [
-            "10.7.0.0/16"
+            "${monitor_ip_range}"
         ],
         "destination_fqdns": [
             "westeurope.ods.opinsights.azure.com",
@@ -102,9 +40,7 @@
             "login.microsoftonline.com",
             "management.azure.com",
             "graph.windows.net",
-            "graph.microsoft.com",
-            "8ab42eab-5938-4097-9301-5030dcd8a123.oms.opinsights.azure.com",
-            "api.snapcraft.io"
+            "graph.microsoft.com"
         ]
     },
     "work_to_allow_osmagent": {
@@ -119,7 +55,7 @@
             }
         ],
         "source_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_fqdns": [
             "ods.systemcenteradvisor.com"
@@ -137,7 +73,7 @@
             }
         ],
         "source_addresses": [
-            "10.3.0.0/16"
+            "${work_ip_range}"
         ],
         "destination_fqdns": [
             "westeurope.monitoring.azure.com",

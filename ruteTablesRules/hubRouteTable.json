@@ -1,0 +1,12 @@
+{
+    "work_to_firewall": {
+        "address_prefix": "${work_ip_range}",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "${firewall_private_ip}"
+    },
+    "monitor_to_firewall": {
+        "address_prefix": "${monitor_ip_range}",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "${firewall_private_ip}"
+    }
+}
