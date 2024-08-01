@@ -25,7 +25,7 @@ module "work_vnet" {
 locals {
   work_nsg_name                 = "network-security-group-work-tf"
   work_default_subnet_name      = "subnet-default-work-tf"
-  work_default_subnet_name_ip_range = ["${local.work_default_subnet_addresses}"]
+  work_default_subnet_name_ip_range = ["${local.work_default_subnet_addrs}"]
 }
 
 module "work_default_subnet" {
@@ -42,16 +42,18 @@ module "work_default_subnet" {
 
 locals {
   work_route_table_name = "noya-work-route-table-tf"
-  work_routes_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/ruteTablesRules/workRouteTable.json"
-  work_routes_json_inputs = templatefile("${local.work_routes_json_path}", {
+  work_routes_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/routeTablesRules/workRouteTable.json"
+  inputs_for_work_routes =  {
     work_ip_range        = local.work_ip_range
     monitor_ip_range = local.monitor_ip_range
     hub_ip_range = local.hub_ip_range
-    vpn_client_configuration_address_space = local.vpn_client_configuration_address_space
-    vpn_client_subnet = local.vpn_client_subnet
-    vpn_client_subnet2 = local.vpn_client_subnet2
+    vpn_client_addrs = local.vpn_client_addrs
+    vpn_client_subnet_addrs = local.vpn_client_subnet_addrs
+    vpn_client_subnet2_addrs = local.vpn_client_subnet2_addrs
     firewall_private_ip = local.firewall_private_ip
-  })
+    internet = local.internet
+  }
+  work_routes_json_inputs = templatefile("${local.work_routes_json_path}", local.inputs_for_work_routes)
   work_routes_map       = tomap(jsondecode(local.work_routes_json_inputs))
 }
 

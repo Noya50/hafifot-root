@@ -10,17 +10,22 @@
         "next_hop_in_ip_address": "${firewall_private_ip}"
     },
     "vpn_to_firewall": {
-        "address_prefix": "${vpn_client_configuration_address_space}",
+        "address_prefix": "${vpn_client_addrs}",
         "next_hop_type": "VirtualAppliance",
         "next_hop_in_ip_address": "${firewall_private_ip}"
     },
     "vpn_subnet_to_firewall": {
-        "address_prefix": "${vpn_client_subnet}",
+        "address_prefix": "${vpn_client_subnet_addrs}",
         "next_hop_type": "VirtualAppliance",
         "next_hop_in_ip_address": "${firewall_private_ip}"
     },
     "vpn_subnet2_to_firewall": {
-        "address_prefix": "${vpn_client_subnet2}",
+        "address_prefix": "${vpn_client_subnet2_addrs}",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "${firewall_private_ip}"
+    },
+    "all_to_firewall": {
+        "address_prefix": "${internet}",
         "next_hop_type": "VirtualAppliance",
         "next_hop_in_ip_address": "${firewall_private_ip}"
     }

@@ -60,7 +60,7 @@
             "Any"
         ],
         "source_addresses": [
-            "${vpn_client_configuration_address_space}"
+            "${vpn_client_addrs}"
         ],
         "destination_addresses": [
             "${work_ip_range}"
@@ -77,7 +77,7 @@
             "${work_ip_range}"
         ],
         "destination_addresses": [
-            "${vpn_client_configuration_address_space}"
+            "${vpn_client_addrs}"
         ],
         "destination_ports": [
             "*"
@@ -91,7 +91,7 @@
             "${work_ip_range}"
         ],
         "destination_addresses": [
-            "${vpn_client_subnet}"
+            "${vpn_client_subnet_addrs}"
         ],
         "destination_ports": [
             "*"
@@ -105,7 +105,7 @@
             "${work_ip_range}"
         ],
         "destination_addresses": [
-            "${vpn_client_subnet2}"
+            "${vpn_client_subnet2_addrs}"
         ],
         "destination_ports": [
             "*"
@@ -116,7 +116,7 @@
             "Any"
         ],
         "source_addresses": [
-            "${vpn_client_configuration_address_space}"
+            "${vpn_client_addrs}"
         ],
         "destination_addresses": [
             "${monitor_ip_range}"
@@ -133,7 +133,7 @@
             "${monitor_ip_range}"
         ],
         "destination_addresses": [
-            "${vpn_client_configuration_address_space}"
+            "${vpn_client_addrs}"
         ],
         "destination_ports": [
             "*"
@@ -147,7 +147,7 @@
             "${monitor_ip_range}"
         ],
         "destination_addresses": [
-            "${vpn_client_subnet}"
+            "${vpn_client_subnet_addrs}"
         ],
         "destination_ports": [
             "*"
@@ -186,7 +186,7 @@
             "Any"
         ],
         "source_addresses": [
-            "10.3.0.4"
+            "${storage_account_private_ip}"
         ],
         "destination_addresses": [
             "${work_vm_private_ip}"

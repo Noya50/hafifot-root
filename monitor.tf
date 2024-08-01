@@ -23,9 +23,9 @@ module "monitor_vnet" {
 }
 
 locals {
-  monitor_nsg_name                 = "network-security-group-monitor-tf"
-  monitor_default_subnet_name      = "subnet-default-monitor-tf"
-  monitor_default_subnet_ip_range = ["${local.monitor_default_subnet_addresses}"]
+  monitor_nsg_name                = "network-security-group-monitor-tf"
+  monitor_default_subnet_name     = "subnet-default-monitor-tf"
+  monitor_default_subnet_ip_range = ["${local.monitor_default_subnet_addrs}"]
 }
 
 module "monitor_default_subnet" {
@@ -42,17 +42,19 @@ module "monitor_default_subnet" {
 
 locals {
   monitor_route_table_name = "noya-monitor-route-table-tf"
-  monitor_routes_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/ruteTablesRules/monitorRouteTable.json"
-  monitor_routes_json_inputs = templatefile("${local.monitor_routes_json_path}", {
-    work_ip_range        = local.work_ip_range
-    monitor_ip_range = local.monitor_ip_range
-    hub_ip_range = local.hub_ip_range
-    firewall_private_ip = local.firewall_private_ip
-    vpn_client_subnet = local.vpn_client_subnet
-    vpn_client_subnet2 = local.vpn_client_subnet2
-    vpn_client_configuration_address_space = local.vpn_client_configuration_address_space
-  })
-  monitor_routes_map       = tomap(jsondecode(local.monitor_routes_json_inputs))
+  monitor_routes_json_path = "C:/Users/sysadmin7/Desktop/hafifot-root/routeTablesRules/monitorRouteTable.json"
+  inputs_for_monitor_routes = {
+    work_ip_range            = local.work_ip_range
+    monitor_ip_range         = local.monitor_ip_range
+    hub_ip_range             = local.hub_ip_range
+    firewall_private_ip      = local.firewall_private_ip
+    vpn_client_subnet_addrs  = local.vpn_client_subnet_addrs
+    vpn_client_subnet2_addrs = local.vpn_client_subnet2_addrs
+    vpn_client_addrs         = local.vpn_client_addrs
+    internet                 = local.internet
+  }
+  monitor_routes_json_inputs = templatefile("${local.monitor_routes_json_path}", local.inputs_for_monitor_routes)
+  monitor_routes_map         = tomap(jsondecode(local.monitor_routes_json_inputs))
 }
 
 module "monitor_route_table" {

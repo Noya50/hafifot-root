@@ -17,7 +17,7 @@
             "login.microsoftonline.com"
         ]
     },
-    "monitor_to_gafana&azure": {
+    "monitor_to_azurelogin": {
         "protocols": [
             {
                 "type": "Http",
@@ -32,15 +32,7 @@
             "${monitor_ip_range}"
         ],
         "destination_fqdns": [
-            "westeurope.ods.opinsights.azure.com",
-            "westeurope.oms.opinsights.azure.com",
-            "westeurope.monitoring.azure.com",
-            "westeurope.loganalytics.io",
-            "westeurope.monitor.azure.com",
-            "login.microsoftonline.com",
-            "management.azure.com",
-            "graph.windows.net",
-            "graph.microsoft.com"
+            "login.microsoftonline.com"
         ]
     },
     "work_to_allow_osmagent": {
@@ -58,7 +50,8 @@
             "${work_ip_range}"
         ],
         "destination_fqdns": [
-            "ods.systemcenteradvisor.com"
+            "ods.systemcenteradvisor.com",
+            "noyawork-aks-6vg5vb7y.hcp.westeurope.azmk8s.io"
         ]
     },
     "work_to_monitor": {
@@ -76,9 +69,29 @@
             "${work_ip_range}"
         ],
         "destination_fqdns": [
-            "westeurope.monitoring.azure.com",
-            "global.handler.control.monitor.azure.com",
-            "westeurope.handler.control.monitor.azure.com"
+            "westeurope.monitoring.azure.com"
+        ]
+    },
+    "monitor_to_gafana&azure": {
+        "protocols": [
+            {
+                "type": "Http",
+                "port": 80
+            },
+            {
+                "type": "Https",
+                "port": 443
+            }
+        ],
+        "source_addresses": [
+            "${monitor_ip_range}"
+        ],
+        "destination_fqdns": [
+            "westeurope.oms.opinsights.azure.com",
+            "westeurope.loganalytics.io",
+            "grafana.com",
+            "api.loganalytics.io",
+            "westeurope.ods.opinsights.azure.com"
         ]
     }
 }
